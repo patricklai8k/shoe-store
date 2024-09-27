@@ -1,0 +1,189 @@
+.dashhboard-header {
+    align-items: center;
+    border-bottom: 1px solid #a4a4a4f1;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.logo {
+    height: 40px;
+    margin-right: 20px;
+}
+
+.stores-container {
+    display: flex;
+    flex-direction: column;
+    max-width: 300px;
+    overflow: auto;
+    padding: 0;
+}
+
+.store-list {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+    padding: 10px;
+
+    &:hover {
+        background-color: #f9f9f9;
+        cursor: pointer;
+    }
+}
+
+.store-list-name {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.store-address {
+    margin-top: 0;
+    text-align: start;
+}
+
+.store-slideout {
+    min-width: 500px;
+    overflow-y: auto;
+    padding: 20px;
+    position: relative;
+}
+
+.home-container {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 40px);
+    overflow: hidden;
+    padding: 20px;
+}
+
+.marker {
+    cursor: pointer;
+}
+
+.low-stock-alert {
+    background-color: #d83333;
+    border: none;
+    border-radius: 50%;
+    color: #ffffff;
+    cursor: pointer;
+    height: 35px;
+    padding: 10px;
+    width: 35px;
+    z-index: 1;
+}
+
+.low-stock-detected {
+    background-color: #d83333;
+    border-radius: 5px;
+    color: white;
+    padding: 10px;
+}
+
+.map-container {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    overflow: auto;
+    width: 100%;
+}
+
+.map-panel {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.marker-image {
+    height: 40px;
+    width: 40px;
+}
+
+.low-stock-cta-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.low-stock-cta {
+    background-color: #d83333;
+    border-radius: 5px;
+    color: white;
+    padding: 10px;
+    text-align: center;
+}
+
+.custom-tooltip {
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.recent-activities {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.recent-activity {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 10px;
+}
+
+.inventory-table {
+    border: 1px solid;
+    border-collapse: collapse;
+    width: 100%;
+
+    th {
+        border: 1px solid;
+    }
+
+    td {
+        border: 1px solid;
+    }
+}
+
+.resolve-issue-button {
+    border: none;
+    background-color: #ffffff;
+    border-radius: 5px;
+    color: #000000;
+    cursor: pointer;
+    padding: 10px;
+    text-align: center;
+}
+
+.low-stock-slideout {
+    overflow-y: auto;
+    padding: 20px;
+    position: relative;
+}
+
+.request-stock-button {
+    background-color: #000000;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    margin: 5px 0;
+    padding: 10px;
+    text-align: center;
+}
+
+.stock-transfer-label {
+    margin-right: 10px;
+}
+
+.stock-transfer-cta {
+    display: flex;
+    gap: 20px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
