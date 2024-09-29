@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Store } from "../../data/stores";
 import { CloseButton } from "../../components/closeButton/CloseButton";
-import { LineChart, Line, XAxis, YAxis, Tooltip } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, Tooltip, Label } from 'recharts';
 import { StockAlert } from "../../data/types";
 
 
@@ -22,7 +22,7 @@ type StoreSlideoutProps = {
     onClose: () => void;
     store: Store;
     lowStockAlerts: {
-        [key: string]: any;
+        [key: string]: StockAlert[];
     };
     onAlertClick: (alert: StockAlert) => void;
 };
@@ -81,10 +81,11 @@ export const StoreSlideout: React.FC<StoreSlideoutProps> = ({onClose, store, low
                 <LineChart width={470} height={300} data={storeData.salesData.tenDays}>
                     <Line type="monotone" dataKey="sales" stroke="#8884d8" />
                     <XAxis
+                        reversed={true}
                         dataKey="date"
                         tickFormatter={(date) => new Date(date).toLocaleDateString()}
                     />
-                    <YAxis />
+                    <YAxis padding={{ top: 30 }} tickFormatter={v => `$${v}`} />
                     <Tooltip content={<CustomTooltip />}/>
                 </LineChart>
                 <h3>Recent Sales</h3>

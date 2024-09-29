@@ -32,6 +32,7 @@ export const makeServer = () => {
             this.passthrough("https://api.mapbox.com/**");
             this.passthrough("https://events.mapbox.com/**");
 
+            // This is a workaround for MirageJS and usage with mapbox-gl
             if (!window.Request.prototype.hasOwnProperty('signal')) {
                 // @ts-ignore
                 window.Request.prototype.signal = undefined;
@@ -42,9 +43,6 @@ export const makeServer = () => {
             );
             // @ts-ignore
             this.pretender.passthroughRequest = (verb, path, request) => {
-                // Needed because responseType is not set correctly in Mirages passthrough
-                // for more details see: https://github.com/miragejs/miragejs/issues/1915
-
                 if (verb === 'GET' && path.match(/\.png|\.pbf|\.webp|\.glb/)) {
                     request.responseType = 'arraybuffer';
                 }

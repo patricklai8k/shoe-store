@@ -65,29 +65,39 @@ export const Home: React.FC = () => {
             });
     }, []);
 
-    const zoomMap = (longitude: number, latitude: number) => {
+    const zoomMap = (minLongitude: number, minLatitude: number, maxLongitude: number, maxLatitude: number) => {
         if (mapRef.current) {
             mapRef.current.fitBounds(
                 [
-                    [longitude, latitude-1],
-                    [longitude+2, latitude+1]
+                    [minLongitude, minLatitude], //-1 -1
+                    [maxLongitude, maxLatitude] //+2 +1
                 ],
                 {padding: 40, duration: 1000}
             );
         }
     };
 
-    const resetZoom = () => {
-        if (mapRef.current) {
-            mapRef.current.fitBounds(
-                [
-                    [DEFAULT_LONGITUDE-1, DEFAULT_LATITUDE-3],
-                    [DEFAULT_LONGITUDE+4, DEFAULT_LATITUDE+3]
-                ],
-                {padding: 40, duration: 1000}
+    const handleStoreSlideoutClose = () => {
+        setShowShopSlideout(false);
+        setCurrentStore(undefined);
+        zoomMap(DEFAULT_LONGITUDE-3, DEFAULT_LATITUDE-3, DEFAULT_LONGITUDE+3, DEFAULT_LATITUDE+3);
+    }
+
+    const handleAlertClick = (alert: StockAlert) => {
+        setShowLowStockSlideout(true);
+        setCurrentAlert(alert);
+    }
+
+    const handleAlertResolved = (alert: StockAlert) => {
+        setLowStockAlerts((prev: any) => {
+            const newAlertState = {...prev};
+            newAlertState[alert.store] = newAlertState[alert.store].filter(
+                (item: StockAlert) => item.model !== alert.model
             );
-        }
-    };
+            return newAlertState;
+        });
+        setShowLowStockSlideout(false);
+    }
 
     const StoreList = stores.map((store) => {
         return (
@@ -97,7 +107,7 @@ export const Home: React.FC = () => {
             onClick={() => {
                 setCurrentStore(store);
                 setShowShopSlideout(true);
-                zoomMap(store.location.longitude, store.location.latitude);
+                zoomMap(store.location.longitude, store.location.latitude - 1, store.location.longitude + 2, store.location.latitude +1 );
             }}
             onMouseEnter={() => {
                 setPopUpData(store);
@@ -111,6 +121,44 @@ export const Home: React.FC = () => {
             }
         </li>);
     });
+
+    const MapLowStockAlerts = Object.keys(lowStockAlerts).length > 0 && Object.entries(lowStockAlerts).map((entry, idx) => {
+        const [key, value] = entry;
+
+        if (value.length === 0) {
+            return null;
+        }
+
+        let longitude = 0, latitude = 0;
+
+        for (const store of stores) {
+            if (store.name === key) {
+                longitude = store.location.longitude;
+                latitude = store.location.latitude;
+            }
+        }
+
+        return(<Marker
+            className="marker"
+            key={idx}
+            longitude={longitude}
+            latitude={latitude}
+            onClick={(e) => {
+                e.originalEvent.stopPropagation();
+            }}
+            offset={[20, -35]}
+            anchor="bottom">
+            <button
+                className="low-stock-alert"
+                onClick={()=>{
+                    setCurrentStore(stores.find((store) => store.name === key));
+                    setShowShopSlideout(true);
+                    zoomMap(longitude, latitude - 1, longitude + 2, latitude + 1);
+                }}>
+                {value.length}
+            </button>
+        </Marker>)
+    })
     
     return (
         <div className="home-container">
@@ -124,17 +172,10 @@ export const Home: React.FC = () => {
                 </ul>
                 {showShopSlideout && currentStore &&
                     <StoreSlideout
-                        onClose={() => {
-                            setShowShopSlideout(false);
-                            setCurrentStore(undefined);
-                            resetZoom();
-                        }}
+                        onClose={handleStoreSlideoutClose}
                         store={currentStore}
                         lowStockAlerts={lowStockAlerts}
-                        onAlertClick={(alert: StockAlert) => {
-                            setShowLowStockSlideout(true);
-                            setCurrentAlert(alert);
-                        }}/>
+                        onAlertClick={handleAlertClick}/>
                 }
                 <div className="map-panel">
                 <Map
@@ -173,42 +214,7 @@ export const Home: React.FC = () => {
                             </div>
                         </Popup>
                     }
-                    {Object.keys(lowStockAlerts).length > 0 && Object.entries(lowStockAlerts).map((entry, idx) => {
-                        const [key, value] = entry;
-
-                        if (value.length === 0) {
-                            return null;
-                        }
-
-                        let longitude = 0, latitude = 0;
-                        for (const store of stores) {
-                            if (store.name === key) {
-                                longitude = store.location.longitude;
-                                latitude = store.location.latitude;
-                            }
-                        }
-
-                        return(<Marker
-                            className="marker"
-                            key={idx}
-                            longitude={longitude}
-                            latitude={latitude}
-                            onClick={(e) => {
-                                e.originalEvent.stopPropagation();
-                            }}
-                            offset={[20, -35]}
-                            anchor="bottom">
-                            <button
-                                className="low-stock-alert"
-                                onClick={()=>{
-                                    setCurrentStore(stores.find((store) => store.name === key));
-                                    setShowShopSlideout(true);
-                                    zoomMap(longitude, latitude);
-                                }}>
-                                {value.length}
-                            </button>
-                        </Marker>)
-                    })}
+                    {MapLowStockAlerts}
                 </Map>
                 {showLowStocklideout && currentAlert &&
                     <LowStockSlideout 
@@ -217,16 +223,7 @@ export const Home: React.FC = () => {
                             setCurrentAlert(undefined);
                         }}
                         currentAlert={currentAlert}
-                        onAlertResolve={(alert: StockAlert) => {
-                            setLowStockAlerts((prev: any) => {
-                                const newAlertState = {...prev};
-                                newAlertState[alert.store] = newAlertState[alert.store].filter(
-                                    (item: StockAlert) => item.model !== alert.model
-                                );
-                                return newAlertState;
-                            });
-                            setShowLowStockSlideout(false);
-                        }}
+                        onAlertResolve={handleAlertResolved}
                     />
                 }
                 </div>
