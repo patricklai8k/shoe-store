@@ -3,7 +3,7 @@ import marker from '../../assets/aldo-circle-logo.png';
 import React, { useEffect, useRef, useState } from 'react';
 import { LowStockSlideout } from './LowStockSlideout';
 import { StockAlert } from '../../data/types';
-import { Store } from '../../data/stores';
+import { Store } from '../../data/types';
 import { StoreSlideout } from './StoreSlideout';
 import Logo from '../../assets/aldo.png';
 import './index.css';
@@ -69,8 +69,8 @@ export const Home: React.FC = () => {
         if (mapRef.current) {
             mapRef.current.fitBounds(
                 [
-                    [minLongitude, minLatitude], //-1 -1
-                    [maxLongitude, maxLatitude] //+2 +1
+                    [minLongitude, minLatitude],
+                    [maxLongitude, maxLatitude]
                 ],
                 {padding: 40, duration: 1000}
             );

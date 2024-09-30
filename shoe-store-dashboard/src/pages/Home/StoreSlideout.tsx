@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Store } from "../../data/stores";
+import { Store } from "../../data/types";
 import { CloseButton } from "../../components/closeButton/CloseButton";
-import { LineChart, Line, XAxis, YAxis, Tooltip, Label } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, Tooltip } from 'recharts';
 import { StockAlert } from "../../data/types";
 
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
         return (
             <div className="custom-tooltip">
@@ -42,22 +42,22 @@ export const StoreSlideout: React.FC<StoreSlideoutProps> = ({onClose, store, low
         <div className="store-slideout">
         <CloseButton onClick={onClose} />
         <h2>{store.name}</h2>
+        <div className="low-stock-cta-container">
+            {lowStockAlerts[store.name] && lowStockAlerts[store.name].map((alert: StockAlert) => {
+            return (
+                <div key={alert.store} className="low-stock-cta">
+                    <p><b>{alert.model}</b> is running low in stock. Only {alert.inventory} left.</p>
+                    <button
+                        className="resolve-issue-button"
+                        onClick={() => onAlertClick(alert)}>
+                        Resolve Issue
+                    </button>
+                </div>
+            );
+            })}
+        </div>
         {storeData &&
             <>
-                <div className="low-stock-cta-container">
-                    {lowStockAlerts[store.name] && lowStockAlerts[store.name].map((alert: StockAlert) => {
-                    return (
-                        <div className="low-stock-cta">
-                        <p><b>{alert.model}</b> is running low in stock. Only {alert.inventory} left.</p>
-                        <button
-                            className="resolve-issue-button"
-                            onClick={() => onAlertClick(alert)}>
-                            Resolve Issue
-                            </button>
-                        </div>
-                    );
-                    })}
-                </div>
                 <h3>Inventory</h3>
                 <table className="inventory-table">
                     <thead>

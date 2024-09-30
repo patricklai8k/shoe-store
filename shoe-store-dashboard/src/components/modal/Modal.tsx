@@ -2,8 +2,6 @@ import React from 'react';
 import { CloseButton } from '../closeButton/CloseButton';
 import './style.css';
 
-
-
 type ModalProps = {
     children: React.ReactNode;
     onClose: () => void;
